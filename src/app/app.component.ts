@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { map, Observable } from 'rxjs';
 
 
   @Component({
@@ -9,9 +10,28 @@ import { Router } from '@angular/router';
     styleUrls: ["./app.component.css"]
   })
   export class AppComponent implements OnInit, OnDestroy {
-    cities = ["London", "Paris", "Moscow", "New York", "Karachi", "Sydney"];
+    countries = [
+      {
+        name: "United Kingdom",
+        cities: ["London", "Warwick", "Birmingham"]
+      },
+      {
+        name: "United States",
+        cities: ["New York", "Chicago", "Washington"]
+      },
+      {
+        name: "Australia",
+        cities: ["Sydney", "Adelaide", "Melbourne"]
+      },
+      {
+        name: "Pakistan",
+        cities: ["Lahore", "Karachi", "Islamabad"]
+      }
+    ];
 
-    cityControl!: FormControl;
+    countryControl: FormControl;
+    cityControl: FormControl;
+    cities$: Observable<any>;
 
     constructor(private router: Router) {}
 
@@ -21,8 +41,12 @@ import { Router } from '@angular/router';
         .subscribe(value => {
           this.router.navigate([value]);
         });
-    }
 
+      this.countryControl = new FormControl("");
+      this.cities$ = this.countryControl.valueChanges.pipe(
+        map(country => country.cities)
+      );
+    }
     ngOnDestroy() {
     }
   }
